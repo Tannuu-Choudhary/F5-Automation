@@ -1,1 +1,1 @@
-print("I want to be a technically strong engineer")
+print("Learning Git with F5 automation")
