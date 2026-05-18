@@ -1,0 +1,121 @@
+import requests
+import json
+import urllib3
+
+F5_IP = "192.168.35.129"
+USERNAME = "admin"
+Password = "Tannu@123"
+
+APP_NAME = "Automation"
+
+Pool_Name = f"{APP_NAME}_Pool
+VIP_Name = f"{APP_NAME}_VS
+VIP_IP = "192.168.106.202"
+VIP_Port = 80
+
+Monitor_Name = f{APP_NAME}_Monitor
+
+Pool_Members = [ 
+{"192.168.106.130"},
+{"192.168.106.138"}
+]
+
+urllib3.disabl_warnings()
+Headers = {"Content-Type": "application/json"}
+Auth = (USERNAME, Password)
+URL = f"https://{F5_IP}/mgmt/tm/ltm"
+
+###############Create_Monitor##############
+
+Monitor_URL = f"{URL}/monitor/http"
+
+Monitor_Payload = {
+"name": Monitor_Name
+}
+
+Monitor_Response = requests.post(
+Monitor_URL,
+auth = Auth,
+headers = Headers,
+json = Monitor_Payload,
+verify = False
+)
+
+print("\n==========Monitor Response============")
+print("status:", Monitor_Response.status_code)
+print(Monitor_Response.text)
+
+
+#######################create Pool######################
+
+Pool_URL = f"{URL}/pool"
+
+Pool_payload = {
+"name": Pool_Name,
+"loadbalancingMode": "round-robin",
+"monitor": Monitor_Name
+)
+
+Pool_Response = requests.post(
+Pool_URL,
+auth = Auth,
+json = Pool_payload,
+verify = False
+)
+
+print("\n============Pool Response=================")
+print("status:", Pool_Response.status_code)
+print(Pool_Response.text)
+
+
+######################Add Members###########################
+
+Member_URL = f"{URL}/pool/{Pool_Name}/members"
+for member in Pool_Members
+Pool_Members_payload = { 
+"name": f"{member}:{VIP_IP}",
+"address": member
+}
+
+Pool_Members_response = requests.post(
+Member_URL,
+auth = Auth,
+json = Pool_Members_payload,
+verify = False
+)
+
+print("\n=================Pool Members==================")
+print"status:", Pool_Members_response.status_code)
+print(Pool_Members_response.text)
+
+
+#####################Create VIP##########################
+
+VIP_URL = f"{URL}/virtual"
+
+VIP_payload = {
+"name": VIP_Name,
+"destination": f"{VIP_IP}:{VIP_Port}",
+"mask": 255.255.255.255,
+"ipProtocol": "tcp",
+"sourceAddressTranslation": {
+"type": "automap"
+},
+"pool": Pool_Name
+}
+
+VIP_Response = requests.post(
+VIP_URL,
+auth = Auth,
+json = VIP_payload,
+verify = False
+)
+
+print("\n====================VIP Response======================)
+print("status:", VIP_Response.status_code)
+print(VIP_Response.text)
+
+
+
+
+
