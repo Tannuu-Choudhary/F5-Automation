@@ -196,6 +196,7 @@ SAVE_RESPONSE = requests.post(
 print("Status:", SAVE_RESPONSE.status_code)
 
 print(SAVE_RESPONSE.text)
+print "CI/CD Deployment successfull")
 
 #############################################################################
 ######################## FINAL DEPLOYMENT STATUS ############################
