@@ -15,9 +15,9 @@ urllib3.disable_warnings()
 
 F5_IP = "192.168.35.129"
 
-USERNAME = "admin"
+USERNAME = os.environ['F5_CREDS_USR']
 
-PASSWORD = "Tannu@123"
+PASSWORD = os.environ['F5_CREDS_PSW']
 
 #############################################################################
 ######################## JENKINS PARAMETERS #################################
