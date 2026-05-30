@@ -2,30 +2,32 @@ pipeline {
 
     agent any
 
+    environment {
+
+        F5_CREDS = credentials('F5_ADMIN')
+
+    }
+
     parameters {
 
         string(
             name: 'APP_NAME',
-            defaultValue: 'testapp',
-            description: 'Application Name'
+            defaultValue: 'testapp'
         )
 
         string(
             name: 'VIP_IP',
-            defaultValue: '192.169.106.100',
-            description: 'VIP Address'
+            defaultValue: '192.169.106.100'
         )
 
         string(
             name: 'VIP_PORT',
-            defaultValue: '80',
-            description: 'VIP Port'
+            defaultValue: '80'
         )
 
         string(
             name: 'POOL_MEMBERS',
-            defaultValue: '192.168.35.130,192.168.35.131',
-            description: 'Comma Separated Pool Members'
+            defaultValue: '192.168.35.130,192.168.35.131'
         )
 
     }
@@ -49,22 +51,6 @@ pipeline {
                 bat '"C:\\Users\\choud\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" App_Config_LB.py'
 
             }
-
-        }
-
-    }
-
-    post {
-
-        success {
-
-            echo 'Deployment Successful'
-
-        }
-
-        failure {
-
-            echo 'Deployment Failed'
 
         }
 
