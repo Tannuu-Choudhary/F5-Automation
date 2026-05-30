@@ -38,7 +38,7 @@ pipeline {
 
             steps {
 
-                echo 'Repository cloned successfully'
+                echo 'echo 'Repository cloned successfully - Poll SCM Test''
 
             }
 
