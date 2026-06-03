@@ -1,89 +1,138 @@
 pipeline {
 
-agent any
+    agent any
 
-environment {
+    environment {
 
-    F5_CREDS = credentials('F5_ADMIN')
+        F5_CREDS = credentials('F5_ADMIN')
 
-}
+    }
 
-parameters {
+    parameters {
 
-    choice(
-        name: 'ENVIRONMENT',
-        choices: ['DEV', 'QA', 'PROD'],
-        description: 'Select Deployment Environment'
-    )
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['DEV', 'QA', 'PROD'],
+            description: 'Select Deployment Environment'
+        )
 
-    string(
-        name: 'APP_NAME',
-        defaultValue: 'testapp',
-        description: 'Application Name'
-    )
+        string(
+            name: 'APP_NAME',
+            defaultValue: 'testapp',
+            description: 'Application Name'
+        )
 
-    string(
-        name: 'VIP_IP',
-        defaultValue: '192.169.106.100',
-        description: 'Virtual Server IP'
-    )
+        string(
+            name: 'VIP_IP',
+            defaultValue: '192.169.106.100',
+            description: 'Virtual Server IP'
+        )
 
-    string(
-        name: 'VIP_PORT',
-        defaultValue: '80',
-        description: 'Virtual Server Port'
-    )
+        string(
+            name: 'VIP_PORT',
+            defaultValue: '80',
+            description: 'Virtual Server Port'
+        )
 
-    string(
-        name: 'POOL_MEMBERS',
-        defaultValue: '192.168.35.130,192.168.35.131',
-        description: 'Comma Separated Pool Members'
-    )
+        string(
+            name: 'POOL_MEMBERS',
+            defaultValue: '192.168.35.130,192.168.35.131',
+            description: 'Comma Separated Pool Members'
+        )
 
-}
+    }
 
-stages {
+    stages {
 
-    stage('Verify Repository') {
+        stage('Verify Repository') {
 
-        steps {
+            steps {
 
-            echo 'Repository cloned successfully'
+                echo 'Repository cloned successfully'
 
-            echo "Selected Environment: ${params.ENVIRONMENT}"
+                echo "Selected Environment: ${params.ENVIRONMENT}"
 
-            echo "Application Name: ${params.APP_NAME}"
+                echo "Application Name: ${params.APP_NAME}"
+
+            }
+
+        }
+
+        stage('Environment Validation') {
+
+            steps {
+
+                script {
+
+                    if (params.ENVIRONMENT == 'DEV') {
+
+                        echo 'DEV Environment Selected'
+
+                    }
+                    else if (params.ENVIRONMENT == 'QA') {
+
+                        echo 'QA Environment Selected'
+
+                    }
+                    else {
+
+                        echo 'PROD Environment Selected'
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        stage('Production Approval') {
+
+            when {
+
+                expression {
+                    params.ENVIRONMENT == 'PROD'
+                }
+
+            }
+
+            steps {
+
+                input(
+                    message: 'Approve Production Deployment?',
+                    ok: 'Deploy'
+                )
+
+            }
+
+        }
+
+        stage('Run F5 Automation') {
+
+            steps {
+
+                bat '"C:\\Users\\choud\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" App_Config_LB.py'
+
+            }
 
         }
 
     }
 
-    stage('Run F5 Automation') {
+    post {
 
-        steps {
+        success {
 
-            bat '"C:\\Users\\choud\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" App_Config_LB.py'
+            echo 'Deployment Successful'
+
+        }
+
+        failure {
+
+            echo 'Deployment Failed'
 
         }
 
     }
-
-}
-
-post {
-
-    success {
-
-        echo 'Deployment Successful'
-
-    }
-
-    failure {
-
-        echo 'Deployment Failed'
-
-    }
-
-}
 
 }
