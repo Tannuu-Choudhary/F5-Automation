@@ -58,6 +58,18 @@ stages {
 
     }
 
+    stage('Workspace Information') {
+
+        steps {
+
+            echo "Workspace Path: ${env.WORKSPACE}"
+
+            bat 'dir'
+
+        }
+
+    }
+
     stage('Environment Validation') {
 
         steps {
@@ -136,23 +148,38 @@ stages {
         }
 
     }
+
     stage('Deployment Information') {
 
-    steps {
+        steps {
 
-        echo "Build Number: ${env.BUILD_NUMBER}"
+            echo "Build Number: ${env.BUILD_NUMBER}"
 
-        echo "Job Name: ${env.JOB_NAME}"
+            echo "Job Name: ${env.JOB_NAME}"
 
-        echo "Build URL: ${env.BUILD_URL}"
+            echo "Build URL: ${env.BUILD_URL}"
 
-        echo "Environment: ${params.ENVIRONMENT}"
+            echo "Environment: ${params.ENVIRONMENT}"
 
-        echo "Application: ${params.APP_NAME}"
+            echo "Application: ${params.APP_NAME}"
+
+        }
 
     }
 
-}
+    stage('Generate Deployment Report') {
+
+        steps {
+
+            bat '''
+            echo Deployment Report > deployment_report.txt
+            echo Application=%APP_NAME% >> deployment_report.txt
+            echo Environment=%ENVIRONMENT% >> deployment_report.txt
+            '''
+
+        }
+
+    }
 
     stage('Run F5 Automation') {
 
@@ -169,6 +196,8 @@ stages {
 post {
 
     success {
+
+        archiveArtifacts artifacts: 'deployment_report.txt'
 
         echo 'Deployment Successful'
 
