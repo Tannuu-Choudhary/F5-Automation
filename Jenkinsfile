@@ -136,6 +136,23 @@ stages {
         }
 
     }
+    stage('Deployment Information') {
+
+    steps {
+
+        echo "Build Number: ${env.BUILD_NUMBER}"
+
+        echo "Job Name: ${env.JOB_NAME}"
+
+        echo "Build URL: ${env.BUILD_URL}"
+
+        echo "Environment: ${params.ENVIRONMENT}"
+
+        echo "Application: ${params.APP_NAME}"
+
+    }
+
+}
 
     stage('Run F5 Automation') {
 
