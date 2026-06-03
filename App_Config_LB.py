@@ -13,7 +13,7 @@ urllib3.disable_warnings()
 ######################## F5 CONNECTION DETAILS ##############################
 #############################################################################
 
-F5_IP = "192.168.35.129"
+F5_IP = os.environ['TARGET_F5']
 
 USERNAME = os.environ['F5_CREDS_USR']
 
