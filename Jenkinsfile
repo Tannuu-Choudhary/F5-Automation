@@ -169,17 +169,30 @@ stages {
 
     stage('Generate Deployment Report') {
 
-        steps {
+    steps {
 
-            bat '''
-            echo Deployment Report > deployment_report.txt
-            echo Application=%APP_NAME% >> deployment_report.txt
-            echo Environment=%ENVIRONMENT% >> deployment_report.txt
-            '''
-
-        }
+        bat '''
+        echo Deployment Report > deployment_report.txt
+        echo Application=%APP_NAME% >> deployment_report.txt
+        echo Environment=%ENVIRONMENT% >> deployment_report.txt
+        echo Build=%BUILD_NUMBER% >> deployment_report.txt
+        '''
 
     }
+
+}
+    
+    stage('Git Information') {
+
+    steps {
+
+        bat 'git rev-parse HEAD'
+
+        bat 'git log -1 --oneline'
+
+    }
+
+}
 
     stage('Run F5 Automation') {
 
