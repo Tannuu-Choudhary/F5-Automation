@@ -25,6 +25,8 @@ PASSWORD = os.environ['F5_CREDS_PSW']
 
 APP_NAME = os.environ['APP_NAME']
 
+ENVIRONMENT = os.environ['ENVIRONMENT']
+
 VIP_IP = os.environ['VIP_IP']
 
 VIP_PORT = int(os.environ['VIP_PORT'])
@@ -38,11 +40,11 @@ POOL_MEMBERS = [
 ######################## DYNAMIC OBJECT NAMES ###############################
 #############################################################################
 
-POOL_NAME = f"{APP_NAME}_Pool"
+POOL_NAME = f"{ENVIRONMENT}_{APP_NAME}_Pool"
 
-VIP_NAME = f"{APP_NAME}_VS"
+VIP_NAME = f"{ENVIRONMENT}_{APP_NAME}_VS"
 
-MONITOR_NAME = f"{APP_NAME}_Monitor"
+MONITOR_NAME = f"{ENVIRONMENT}_{APP_NAME}_Monitor"
 
 #############################################################################
 ######################## COMMON VARIABLES ###################################
@@ -272,6 +274,8 @@ except Exception as e:
 #############################################################################
 
 print("\n========== DEPLOYMENT COMPLETE ==========")
+
+print(f"Environment      : {ENVIRONMENT}")
 
 print(f"Application Name : {APP_NAME}")
 
